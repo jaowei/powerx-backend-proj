@@ -44,6 +44,7 @@ module.exports = (db) => {
         const uid = req.uid
         const { title } = req.body
         const updatedList = new List({title})
+        console.log("hi")
         try {
             const list = await db.updateListByUser(id, uid, updatedList)
             res.status(200).send(list)

@@ -16,6 +16,11 @@ module.exports = (pool) => {
         return res.rows.map(row => new List(row))
     }
 
+    db.getAllUsersByList = async (id) => {
+        const res = await pool.query('SELECT uid FROM Lists WHERE id=$1', [id])
+        return res.rowCount ? res.rows[0] : null
+    }
+
     db.getListByUser = async (id, uid) => {
         const res = await pool.query(
             'SELECT * FROM Lists WHERE $1= ANY (uid) AND id=$2',

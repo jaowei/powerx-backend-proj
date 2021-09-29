@@ -1,6 +1,6 @@
 const express = require('express')
 
-module.exports = (authMiddleware, authService, db) => {
+module.exports = (authMiddleware, authService, listAuthMiddleware, db) => {
   const router = express.Router()
 
   router.get('/', (req, res, next) => {
@@ -13,6 +13,9 @@ module.exports = (authMiddleware, authService, db) => {
   router.use(authMiddleware)
 
   router.use('/list', require('./list')(db))
+
+  router.use(listAuthMiddleware)
+
   router.use('/task', require('./task')(db))
 
   return router

@@ -4,10 +4,14 @@ const Router = require('./routes')
 const AuthService = require('./services/auth')
 const db = require('./db')
 const AuthMiddleware = require('./middleware/auth')
+const ListAuthService = require('./services/list-auth')
+const ListAuthMiddleware = require('./middleware/list-auth')
 
 const authService = AuthService(db)
 const authMiddleware = AuthMiddleware(authService)
-const router = Router(authMiddleware, authService, db)
+const listAuthService = ListAuthService(db)
+const listAuthMiddleware = ListAuthMiddleware(listAuthService)
+const router = Router(authMiddleware, authService, listAuthMiddleware, db)
 const app = App(router)
 
 const PORT = process.env.PORT || 3000

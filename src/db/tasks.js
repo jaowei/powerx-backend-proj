@@ -3,11 +3,12 @@ const Task = require("../models/task");
 module.exports = (pool) => {
     const db = {};
 
-    db.createTask = async (task, uid) => {
+    db.createTask = async (task) => {
         const res = await pool.query(
-            "INSERT INTO Tasks(description,completed,list_id) VALUES ($1,$2,$3,$4) RETURNING *",
+            "INSERT INTO Tasks(description,completed,list_id) VALUES ($1,$2,$3) RETURNING *",
             [task.description, task.completed, task.list_id]
         );
+        
         return new Task(res.rows[0]);
     };
 
