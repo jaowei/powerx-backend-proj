@@ -18,7 +18,7 @@ const listAuthMiddleware = ListAuthMiddleware(listAuthService)
 
 const router = Router(authMiddleware, authService, listAuthMiddleware, amqpService, db)
 const app = App(router)
-// emailConsumerService.consumeEmail()
+emailConsumerService.consumeEmail()
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {
