@@ -4,8 +4,8 @@ const Task = require('../models/task')
 module.exports = (db) => {
     const router = express.Router()
 
-    router.post('/:listId', async (req, res) => {
-        const listId = parseInt(req.params.listId)
+    router.post('/', async (req, res) => {
+        const listId = parseInt(req.query.list)
         const { description } = req.body
         const newTask = new Task({ description, completed: false, list_id: listId })
 
@@ -18,9 +18,8 @@ module.exports = (db) => {
     })
 
     router.patch('/', async (req, res) => {
-        // const taskId = req.params.taskId
-        // const listId = req.params.listId
-        console.log(req.query)
+        const listId = parseInt(req.query.list)
+        const taskId = parseInt(req.query.task)
         const { description, completed } = req.body
         const newTask = new Task({ description, completed: completed, list_id: listId })
 
@@ -28,19 +27,18 @@ module.exports = (db) => {
             const task = await db.updateTask(taskId, newTask)
             res.status(200).send(task)
         } catch (e) {
-            res.status(400).send(e)
+            res.status(400).send({error: 'task not updated'})
         }
     })
 
-    router.delete('/:listId/:taskId', async (req, res) => {
-        const taskId = req.params.taskId
-        console.log(req.query)
+    router.delete('/', async (req, res) => {
+        const taskId = req.query.task
         try {
             const success = await db.deleteTask(taskId)
             if (success) {
                 res.status(201).send("Task Deleted!")
             } else {
-                res.status(400).send("Task not found")
+                res.status(400).send("Task not found for user, check permissions")
             }
         } catch (e) {
             res.status(400).send(e)

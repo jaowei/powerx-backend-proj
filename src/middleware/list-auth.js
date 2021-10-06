@@ -1,7 +1,7 @@
 module.exports = (service) => {
     return async (req, res, next) => {
         const userId = req.uid
-        const listId = req.path.substr(6,1)
+        const listId = parseInt(req.query.list)
         const usersList = await service.getAuthorisedListUsers(listId)
 
         if (usersList === null) {
@@ -9,7 +9,7 @@ module.exports = (service) => {
         } else if (usersList.uid.includes(userId)) {
             return next()
         } else {
-            res.status(403).send('Unauthorized user for list')
+            res.status(403).send({error: 'Unauthorized user for list'})
         }
         
     }

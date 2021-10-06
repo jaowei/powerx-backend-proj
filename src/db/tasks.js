@@ -17,7 +17,7 @@ module.exports = (pool) => {
             "UPDATE Tasks SET description=$2, completed=$3, list_id=$4 WHERE id=$1 RETURNING *",
             [id, task.description, task.completed, task.list_id]
         );
-        return new Task(res.rows[0]);
+        return new Task(res.rows[0])
     };
 
     db.deleteTask = async (id) => {
@@ -26,7 +26,7 @@ module.exports = (pool) => {
     };
 
     db.getAllTasksById = async (id) => {
-        const res = await pool.query("DELETE FROM Tasks WHERE list_id=$1", [id]);
+        const res = await pool.query("SELECT * FROM Tasks WHERE list_id=$1", [id]);
         return res.rows.map(row => new Task(row))
     }
 

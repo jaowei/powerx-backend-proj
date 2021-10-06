@@ -26,13 +26,21 @@ module.exports = (pool) => {
             'SELECT * FROM Lists WHERE $1= ANY (uid) AND id=$2',
             [uid, id]
         )
-        return res.rowCount ? new List(res.rows[0]) : null
+        return new List(res.rows[0])
     }
 
     db.updateListByUser = async (id, uid, list) => {
         const res = await pool.query(
             'UPDATE Lists SET title=$1 WHERE id=$2 AND $3= ANY (uid) RETURNING *', 
             [list.title, id, uid]
+        )
+        return new List(res.rows[0])
+    }
+
+    db.updateListUsers = async (id, uid) => {
+        const res = await pool.query(
+            'UPDATE Lists SET uid = array_append(uid, $1) WHERE id=$2 RETURNING *',
+            [uid, id]
         )
         return new List(res.rows[0])
     }

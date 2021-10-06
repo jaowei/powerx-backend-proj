@@ -1,7 +1,8 @@
 const express = require('express');
 const List = require('../models/list')
+const amqplib = require('amqplib')
 
-module.exports = (db) => {
+module.exports = (db, amqpService) => {
     const router = express.Router()
 
     router.post('/', async (req, res) => {
@@ -11,6 +12,20 @@ module.exports = (db) => {
         try {
             const list = await db.createList(newList)
             res.status(201).send(list)
+        } catch (e) {
+            res.status(400).send(e)
+        }
+    })
+
+    router.post('/access', async (req, res) => {
+        const message = {
+            email: req.body.email,
+            listId: req.body.listId
+        }
+
+        try {
+            await amqpService.publishUserAddition(message)
+            res.status(200).send('Success')
         } catch (e) {
             res.status(400).send(e)
         }
@@ -44,7 +59,6 @@ module.exports = (db) => {
         const uid = req.uid
         const { title } = req.body
         const updatedList = new List({title})
-        console.log("hi")
         try {
             const list = await db.updateListByUser(id, uid, updatedList)
             res.status(200).send(list)
@@ -59,9 +73,9 @@ module.exports = (db) => {
         try {
             const success = await db.deleteListByUser(id, uid)
             if (success) {
-                res.status(201).send("List Deleted!")
+                res.status(201).send({error: "List Deleted!"})
             } else {
-                res.status(400).send("List not found")
+                res.status(400).send({error: "List not found for user, check permissions"})
             }
         } catch (e) {
             res.status(403).send({error: "Unauthorised User"})
