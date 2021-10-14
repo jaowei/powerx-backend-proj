@@ -36,6 +36,20 @@ db.initialise = async () => {
     `)
 
 }
+db.clearUsersTables = async () => {
+    await pool.query('DELETE FROM Users')
+    await pool.query('ALTER SEQUENCE users_id_seq RESTART')
+}
+
+db.clearListsTables = async () => {
+    await pool.query('DELETE FROM Lists')
+    await pool.query('ALTER SEQUENCE lists_id_seq RESTART')
+}
+
+db.clearTasksTables = async () => {
+    await pool.query('DELETE FROM Tasks')
+    await pool.query('ALTER SEQUENCE tasks_id_seq RESTART')
+}
 
 db.end = async () => {
     await pool.end()

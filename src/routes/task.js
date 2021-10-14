@@ -13,6 +13,7 @@ module.exports = (db) => {
             const task = await db.createTask(newTask)
             res.status(201).send(task)
         } catch (e) {
+            console.log(e)
             res.status(400).send(e)
         }
     })

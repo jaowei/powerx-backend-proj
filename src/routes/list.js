@@ -1,6 +1,5 @@
 const express = require('express');
 const List = require('../models/list')
-const amqplib = require('amqplib')
 
 module.exports = (db, amqpService) => {
     const router = express.Router()
@@ -13,7 +12,7 @@ module.exports = (db, amqpService) => {
             const list = await db.createList(newList)
             res.status(201).send(list)
         } catch (e) {
-            res.status(400).send(e)
+            res.status(400).send({error: 'list not created'})
         }
     })
 
@@ -73,7 +72,7 @@ module.exports = (db, amqpService) => {
         try {
             const success = await db.deleteListByUser(id, uid)
             if (success) {
-                res.status(201).send({error: "List Deleted!"})
+                res.status(201).send({message: "List Deleted!"})
             } else {
                 res.status(400).send({error: "List not found for user, check permissions"})
             }

@@ -25,7 +25,7 @@ describe('List authentication middleware', () => {
                     uid: [1]
                 })
                 const { res, next } = getMockRes()
-                listAuthMiddleware(req, res, next)
+                await listAuthMiddleware(req, res, next)
                 expect(next).toBeCalled()
             })
         })
@@ -36,7 +36,7 @@ describe('List authentication middleware', () => {
                     uid: [2]
                 })
                 const { res, next } = getMockRes()
-                listAuthMiddleware(req, res, next)
+                await listAuthMiddleware(req, res, next)
                 expect(next).not.toBeCalled()
                 expect(res.status).toBeCalledWith(403)
             })
@@ -47,7 +47,7 @@ describe('List authentication middleware', () => {
         it('should return 404', async () => {
             service.getAuthorisedListUsers.mockReturnValue(null)
             const { res, next } = getMockRes()
-            listAuthMiddleware(req, res, next)
+            await listAuthMiddleware(req, res, next)
             expect(next).not.toBeCalled()
             expect(res.status).toBeCalledWith(404)
         })
